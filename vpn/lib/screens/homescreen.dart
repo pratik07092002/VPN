@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Icon(
                 CupertinoIcons.flag_circle,
-                color: Colors.white,
+               
                 size: 30,
               ),
               const SizedBox(
