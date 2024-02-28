@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:csv/csv.dart';
 import 'package:get/get.dart';
 import 'package:vpnplaylist/appPrefrences/appPrefrences.dart';
+import 'package:vpnplaylist/models/ipmodel.dart';
 import 'package:vpnplaylist/models/vpnservermodel.dart';
 import 'package:http/http.dart' as http;
 class vpnapi{
@@ -31,4 +34,15 @@ if(serverList.isNotEmpty){
 }
 return serverList;
   }
+
+static Future<void> retriveipdetails({required Rx<ipmodel> ipinformation}) async{
+try{
+final ResponsefromApi = await http.get(Uri.parse("http://ip-api.com/json/"));
+final datafrommapi = jsonDecode(ResponsefromApi.body);
+
+ipinformation.value = ipmodel.fromMap(datafrommapi);
+}catch(error){
+  Get.snackbar("Error occured", error.toString());
+}
+}
 }
