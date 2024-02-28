@@ -2,13 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vpnplaylist/appPrefrences/appPrefrences.dart';
+import 'package:vpnplaylist/appengine/vpnengine.dart';
+import 'package:vpnplaylist/controllers/homecontroller.dart';
 import 'package:vpnplaylist/main.dart';
+import 'package:vpnplaylist/models/vpnservermodel.dart';
+import 'package:vpnplaylist/models/vpnstatus.dart';
 import 'package:vpnplaylist/widgets/Connectionbutton.dart';
 import 'package:vpnplaylist/widgets/widgetsaroundconnect.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
+  HomeScreen({super.key});
+  final HomeControll = Get.put(homeController());
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -30,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Icon(
                 CupertinoIcons.flag_circle,
-               
                 size: 30,
               ),
               const SizedBox(
@@ -60,8 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("VPNAPP"),
-        leading:
-            IconButton(onPressed: () {}, icon: const Icon(Icons.perm_device_info)),
+        leading: IconButton(
+            onPressed: () {}, icon: const Icon(Icons.perm_device_info)),
         actions: [
           IconButton(
               onPressed: () {
@@ -75,19 +78,30 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavBar(context),
-      body: const Column(
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // 2 widgets
-          Row(
+        Obx(() =>   Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               RoundWidget(
-                  title: "Location",
+                  title:
+                      widget.HomeControll.vpnservermod.value.countryname.isEmpty
+                          ? "Location"
+                          : widget.HomeControll.vpnservermod.value.countryname,
                   subtitle: "Free",
                   IconFile: CircleAvatar(
                     backgroundColor: Colors.green,
-                    child: Icon(Icons.flag_circle),
+                    child: widget
+                            .HomeControll.vpnservermod.value.countryname.isEmpty
+                        ? Icon(Icons.flag_circle)
+                        : null,
+                    backgroundImage: widget
+                            .HomeControll.vpnservermod.value.countryname.isEmpty
+                        ? null
+                        : AssetImage(
+                            "countryFlags/${widget.HomeControll.vpnservermod.value.countryShortName.toLowerCase()}.png"),
                   )),
               RoundWidget(
                   title: "Speed",
@@ -98,31 +112,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   ))
             ],
           ),
-
+),
           // connection button
           ConnectionButton(),
 
           // 2 widgets
 
-          Row(
+StreamBuilder<vpnstatus?>(initialData: vpnstatus(), stream: VpnEngine.snapshotvpnstatus(),builder: (context, datasnapshot){
+  return           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               RoundWidget(
-                  title: "0 mbps",
+                  title: "${datasnapshot.data?.bytein ?? '0kbps'} ",
                   subtitle: "Download",
                   IconFile: CircleAvatar(
                     child: Icon(Icons.flag_circle),
                     backgroundColor: Colors.green,
                   )),
               RoundWidget(
-                  title: "0 mbps",
+                  title: "${datasnapshot.data?.byteout ?? '0kbps'}",
                   subtitle: "Upload",
                   IconFile: CircleAvatar(
                     child: Icon(Icons.flag_circle),
                     backgroundColor: Colors.green,
                   )) // connection button
             ],
-          )
+          );
+},)
         ],
       ),
     );
