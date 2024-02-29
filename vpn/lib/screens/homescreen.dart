@@ -7,6 +7,7 @@ import 'package:vpnplaylist/controllers/homecontroller.dart';
 import 'package:vpnplaylist/main.dart';
 
 import 'package:vpnplaylist/models/vpnstatus.dart';
+import 'package:vpnplaylist/screens/selectLocation.dart';
 import 'package:vpnplaylist/widgets/Connectionbutton.dart';
 import 'package:vpnplaylist/widgets/widgetsaroundconnect.dart';
 
@@ -25,7 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Semantics(
       button: true,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Get.to((){
+            return SelectLocation();
+          });
+        },
         child: Container(
           color: Colors.green,
           padding: EdgeInsets.symmetric(horizontal: ScreenSize.width * 0.05),
@@ -60,6 +65,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    VpnEngine.snapshotvpnstage().listen((event) {
+    widget.HomeControll.vpnconnectionstate.value = event;
+    },);
     return Scaffold(
       appBar: AppBar(
         title: const Text("VPNAPP"),

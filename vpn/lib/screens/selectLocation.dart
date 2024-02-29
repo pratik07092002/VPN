@@ -1,8 +1,9 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:vpnplaylist/controllers/vpn_controllers.dart';
+import 'package:vpnplaylist/widgets/vpn_card.dart';
 
 class SelectLocation extends StatefulWidget {
    SelectLocation({super.key});
@@ -59,7 +60,7 @@ return ListView.builder( itemCount: widget.VpnLocation.vpnserverlist.length
 ,physics: BouncingScrollPhysics() ,
 padding: EdgeInsets.all(3),
 itemBuilder: (context,index){
-// Display Card Logic
+return VpnCard(vpnservermod: widget.VpnLocation.vpnserverlist[index]);
 });
 }
   @override
